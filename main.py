@@ -8,31 +8,29 @@ import tqdm
 df = pd.read_csv(
     "C:\\Users\\jamie\\Documents\\essential-coding-skills\\extra\\data.csv"
 )
-x = df.iloc[:, 1:-1]
-lbls = df.iloc[:, -1]
 
-print(lbls)
+features = df.iloc[:, 1:-1]
+labels = df.iloc[:, -1]
 
-col1 = (df.iloc[:, 1] - df.iloc[:, 1].min()) / (
-    df.iloc[:, 1].max() - df.iloc[:, 1].min()
-)
-col2 = (df.iloc[:, 2] - df.iloc[:, 2].min()) / (
-    df.iloc[:, 2].max() - df.iloc[:, 2].min()
-)
-col3 = (df.iloc[:, 3] - df.iloc[:, 3].min()) / (
-    df.iloc[:, 3].max() - df.iloc[:, 3].min()
-)
-col4 = (df.iloc[:, 4] - df.iloc[:, 4].min()) / (
-    df.iloc[:, 4].max() - df.iloc[:, 4].min()
-)
+print(labels)
 
-x = pd.concat([col1, col2, col3, col4, lbls], axis=1)
-x = x.sample(frac=1)
-lbls = x.iloc[:, -1]
+def create_cols(df, col_index):
+    col = (df.iloc[:, col_index] - df.iloc[:, col_index].min()) / (
+        df.iloc[:, col_index].max() - df.iloc[:, col_index].min()
+    )
+    return col
+
+cols = []
+for i in range(1, 5):
+    cols.append(create_cols(df, i))
+
+x = pd.concat(cols + [labels], axis=1)
+x = x.sample(frac=1) 
+labels = x.iloc[:, -1]
 x = x.iloc[:, 1:-1]
 
 xtrain = x[:130]
-ytrain = lbls[:130]
+ytrain = labels[:130]
 
 print("X train:")
 print(xtrain)
